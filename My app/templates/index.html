@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Chat PDF App</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f3f3;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: white;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+        }
+        form {
+            margin-top: 20px;
+            text-align: center;
+        }
+        input[type="file"] {
+            display: none;
+        }
+        label {
+            background-color: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .file-name {
+            display: inline-block;
+            margin-top: 10px;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        input[type="submit"] {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #answer {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Chat PDF App</h1>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <label for="pdf_file">Upload PDF</label>
+            <input type="file" name="pdf_file" id="pdf_file" accept=".pdf">
+            <span class="file-name">No file selected</span>
+            <input type="submit" value="Upload">
+        </form>
+        <form id="chat-form">
+            <input type="text" id="question" placeholder="Ask a question">
+            <input type="hidden" id="pdf-filename" name="pdf_filename">
+            <input type="submit" value="Ask">
+        </form>
+        <div id="answer"></div>
+    </div>
+    <script>
+        document.getElementById("pdf_file").addEventListener("change", function(event) {
+            const fileInput = event.target;
+            document.querySelector(".file-name").textContent = fileInput.files[0].name;
+        });
+
+        document.getElementById("chat-form").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const question = document.getElementById("question").value;
+            const pdfFilename = document.getElementById("pdf-filename").value;
+            fetch("/get_answer", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `question=${encodeURIComponent(question)}&pdf_filename=${encodeURIComponent(pdfFilename)}`,
+            })
+            .then(response => response.text())
+            .then(answer => {
+                document.getElementById("answer").textContent = answer;
+            });
+        });
+    </script>
+</body>
+</html>
