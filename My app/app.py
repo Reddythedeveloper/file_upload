@@ -40,8 +40,6 @@ def get_answer():
         for page_num in range(pdf_reader.numPages):
             text += pdf_reader.getPage(page_num).extractText()
 
-    # Here you can use a language model (e.g., GPT-3) to generate an answer based on the question and the extracted text.
-    # Replace the following line with your actual code.
     answer = "This is a sample answer."
 
     return answer
